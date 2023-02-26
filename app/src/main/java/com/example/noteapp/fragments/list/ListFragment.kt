@@ -1,10 +1,11 @@
 package com.example.noteapp.fragments.list
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.noteapp.R
 import com.example.noteapp.databinding.FragmentListBinding
@@ -31,7 +32,28 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         binding.listLayout.setOnClickListener {
             findNavController().navigate(R.id.action_listFragment_to_updateFragment)
         }
+
+        setupMenu()
+
     }
 
 
+    private fun setupMenu() {
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+            override fun onPrepareMenu(menu: Menu) {
+                // Handle for example visibility of menu items
+            }
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.list_fragment_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Validate and handle the selected menu item
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
 }
+
+
