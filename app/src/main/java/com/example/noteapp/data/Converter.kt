@@ -1,7 +1,7 @@
 package com.example.noteapp.data
 
 import androidx.room.TypeConverter
-import androidx.room.TypeConverters
+import com.example.noteapp.data.models.Priorities
 
 
 class Converter {

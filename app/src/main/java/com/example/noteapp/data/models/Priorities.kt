@@ -1,4 +1,4 @@
-package com.example.noteapp.data
+package com.example.noteapp.data.models
 
 enum class Priorities {
     HIGH,
