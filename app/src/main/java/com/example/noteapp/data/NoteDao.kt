@@ -13,4 +13,5 @@ interface NoteDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertData(noteData: NoteData)
+
 }
