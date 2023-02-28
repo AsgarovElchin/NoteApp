@@ -21,13 +21,13 @@ class ListViewHolder(val binding: RowLayoutBinding) : RecyclerView.ViewHolder(bi
 
             Priorities.MEDIUM -> binding.priorityIndicator.setCardBackgroundColor(
                 ContextCompat.getColor(
-                    itemView.context, R.color.red
+                    itemView.context, R.color.yellow
                 )
             )
 
             Priorities.LOW -> binding.priorityIndicator.setCardBackgroundColor(
                 ContextCompat.getColor(
-                    itemView.context, R.color.red
+                    itemView.context, R.color.green
                 )
             )
         }

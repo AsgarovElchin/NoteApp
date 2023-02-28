@@ -5,14 +5,22 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.noteapp.R
+import com.example.noteapp.data.viewmodel.NoteViewModel
+import com.example.noteapp.data.viewmodel.SharedViewModel
 import com.example.noteapp.databinding.FragmentListBinding
 
 
 class ListFragment : Fragment(R.layout.fragment_list) {
 
+    private val mNoteViewModel: NoteViewModel by viewModels()
+    private val listAdapter: ListAdapter = ListAdapter()
     private lateinit var binding: FragmentListBinding
 
     override fun onCreateView(
@@ -35,6 +43,11 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
         setupMenu()
 
+        setupRecyclerView()
+        mNoteViewModel.getAllData.observe(viewLifecycleOwner, Observer { data ->
+            listAdapter.submitList(data)
+        })
+
     }
 
 
@@ -54,6 +67,13 @@ class ListFragment : Fragment(R.layout.fragment_list) {
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
+
+    fun setupRecyclerView(){
+        binding.recyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.adapter = listAdapter
+    }
+
 }
 
 
