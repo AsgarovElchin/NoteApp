@@ -23,7 +23,7 @@ import com.example.noteapp.databinding.FragmentAddBinding
 class AddFragment : Fragment() {
 
     private val mNoteViewModel: NoteViewModel by viewModels()
-    private val mSharedViewModel : SharedViewModel by viewModels()
+    private val mSharedViewModel: SharedViewModel by viewModels()
 
     private lateinit var binding: FragmentAddBinding
     override fun onCreateView(
@@ -32,11 +32,15 @@ class AddFragment : Fragment() {
     ): View? {
         binding = FragmentAddBinding.inflate(inflater, container, false)
         return binding.root
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupMenu()
+
+        binding.prioritiesSpinner.onItemSelectedListener = mSharedViewModel.listener
     }
 
     private fun setupMenu() {
@@ -81,7 +85,6 @@ class AddFragment : Fragment() {
 
 
     }
-
 
 
 }
