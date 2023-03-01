@@ -1,5 +1,6 @@
 package com.example.noteapp.fragments.update
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -55,14 +56,28 @@ class UpdateFragment : Fragment() {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                if (menuItem.itemId == R.id.menu_save) {
-                    updateData()
+                when (menuItem.itemId) {
+                    R.id.menu_save -> updateData()
+                    R.id.menu_delete -> confirmItemRemoval()
                 }
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
+
+    private fun confirmItemRemoval() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes"){_,_->
+            mNoteViewModel.deleteItem(args.currentItem)
+            Toast.makeText(requireContext(), "Successfully Removed ${args.currentItem.title} ", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_updateFragment_to_listFragment)
+        }
+        builder.setNegativeButton("No"){_,_->}
+        builder.setTitle("Delete ${args.currentItem.title}?")
+        builder.setMessage("Are you sure you want to remove ${args.currentItem.title}?")
+        builder.create().show()
+    }
 
     private fun updateData() {
         val title = binding.currentTitleEt.text.toString()
