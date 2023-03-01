@@ -2,6 +2,7 @@ package com.example.noteapp.fragments.list
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Note
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -15,10 +16,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.noteapp.R
+import com.example.noteapp.data.models.NoteData
 import com.example.noteapp.data.viewmodel.NoteViewModel
 import com.example.noteapp.data.viewmodel.SharedViewModel
 import com.example.noteapp.databinding.FragmentListBinding
 import com.example.noteapp.fragments.list.adapter.ListAdapter
+import com.google.android.material.snackbar.Snackbar
 
 
 class ListFragment : Fragment(R.layout.fragment_list) {
@@ -101,15 +104,24 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
                 val itemToDelete = listAdapter.currentList[viewHolder.adapterPosition]
                 mNoteViewModel.deleteItem(itemToDelete)
-                Toast.makeText(
-                    requireContext(),
-                    "Successfully Removed : '${itemToDelete.title}'",
-                    Toast.LENGTH_SHORT
-                ).show()
+                listAdapter.notifyItemRemoved(viewHolder.adapterPosition)
+
+                restoreDeletedData(viewHolder.itemView,itemToDelete,viewHolder.adapterPosition)
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallBack)
         itemTouchHelper.attachToRecyclerView(recyclerView)
+    }
+
+    private fun restoreDeletedData(view:View, deletedItem : NoteData, position :Int){
+        val snackbar = Snackbar.make(
+            view, "Deleted '${deletedItem.title}",Snackbar.LENGTH_LONG
+        )
+
+        snackbar.setAction("Undo"){
+            mNoteViewModel.insertData(deletedItem)
+        }
+        snackbar.show()
     }
 
     private fun confirmRemoval() {
