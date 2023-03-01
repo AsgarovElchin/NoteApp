@@ -31,6 +31,9 @@
             app:exitAnim="@anim/to_left"
             app:popUpTo="@id/listFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="currentItem"
+            app:argType="com.example.noteapp.data.models.NoteData" />
     </fragment>
     <fragment
         android:id="@+id/listFragment"

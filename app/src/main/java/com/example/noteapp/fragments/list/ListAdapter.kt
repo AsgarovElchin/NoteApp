@@ -1,10 +1,9 @@
 package com.example.noteapp.fragments.list
 
-import android.provider.ContactsContract.CommonDataKinds.Note
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import com.example.noteapp.data.models.NoteData
 import com.example.noteapp.databinding.RowLayoutBinding
 
@@ -18,6 +17,13 @@ class ListAdapter :
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         holder.bind(currentList[position])
+        holder.binding.rowBackground.setOnClickListener {
+            val action = ListFragmentDirections.actionListFragmentToUpdateFragment(currentList[position])
+            holder.binding.root.findNavController().navigate(action)
+        }
+
+
+
     }
 
     object MainDiffUtils : DiffUtil.ItemCallback<NoteData>() {
