@@ -1,7 +1,9 @@
 package com.example.noteapp.fragments.list
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -60,17 +62,34 @@ class ListFragment : Fragment(R.layout.fragment_list) {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Validate and handle the selected menu item
+                when (menuItem.itemId) {
+                    R.id.menu_delete_all -> confirmRemoval()
+                }
+
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    fun setupRecyclerView(){
+    fun setupRecyclerView() {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = listAdapter
     }
+
+    private fun confirmRemoval() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes") { _, _ ->
+            mNoteViewModel.deleteAll()
+            Toast.makeText(requireContext(), "Successfully Removed Everything", Toast.LENGTH_SHORT)
+                .show()
+        }
+        builder.setNegativeButton("No") { _, _ -> }
+        builder.setTitle("Delete Everything?")
+        builder.setMessage("Are you sure you want to remove Everything?")
+        builder.create().show()
+    }
+
 
 }
 

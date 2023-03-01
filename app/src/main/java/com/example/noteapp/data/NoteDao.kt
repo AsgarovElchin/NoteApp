@@ -14,7 +14,11 @@ interface NoteDao {
 
     @Update
     suspend fun updateData(noteData: NoteData)
+
     @Delete
     suspend fun deleteItem(noteData: NoteData)
+
+    @Query("DELETE FROM note_table")
+    suspend fun deleteAll()
 
 }
