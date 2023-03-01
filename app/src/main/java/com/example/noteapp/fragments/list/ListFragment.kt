@@ -10,13 +10,15 @@ import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.noteapp.R
 import com.example.noteapp.data.viewmodel.NoteViewModel
 import com.example.noteapp.data.viewmodel.SharedViewModel
 import com.example.noteapp.databinding.FragmentListBinding
+import com.example.noteapp.fragments.list.adapter.ListAdapter
 
 
 class ListFragment : Fragment(R.layout.fragment_list) {
@@ -56,12 +58,11 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
     }
 
-    private fun showEmptyDatabaseView(emptyDatabase:Boolean){
-        if(emptyDatabase){
+    private fun showEmptyDatabaseView(emptyDatabase: Boolean) {
+        if (emptyDatabase) {
             binding.noDataImageView.visibility = View.VISIBLE
             binding.noDataTextView.visibility = View.VISIBLE
-        }
-        else{
+        } else {
             binding.noDataImageView.visibility = View.INVISIBLE
             binding.noDataTextView.visibility = View.INVISIBLE
         }
@@ -87,10 +88,28 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    fun setupRecyclerView() {
+    private fun setupRecyclerView() {
         binding.recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.adapter = listAdapter
+        swipeToDelete(binding.recyclerView)
+    }
+
+    private fun swipeToDelete(recyclerView: RecyclerView) {
+        val swipeToDeleteCallBack = object : SwipeToDelete() {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+                val itemToDelete = listAdapter.currentList[viewHolder.adapterPosition]
+                mNoteViewModel.deleteItem(itemToDelete)
+                Toast.makeText(
+                    requireContext(),
+                    "Successfully Removed : '${itemToDelete.title}'",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallBack)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
     private fun confirmRemoval() {

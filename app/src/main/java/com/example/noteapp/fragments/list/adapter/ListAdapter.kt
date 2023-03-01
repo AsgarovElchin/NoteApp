@@ -1,4 +1,4 @@
-package com.example.noteapp.fragments.list
+package com.example.noteapp.fragments.list.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,6 +6,8 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import com.example.noteapp.data.models.NoteData
 import com.example.noteapp.databinding.RowLayoutBinding
+import com.example.noteapp.fragments.list.ListFragmentDirections
+import com.example.noteapp.fragments.list.ListViewHolder
 
 class ListAdapter :
     androidx.recyclerview.widget.ListAdapter<NoteData, ListViewHolder>(MainDiffUtils) {
@@ -18,7 +20,8 @@ class ListAdapter :
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         holder.bind(currentList[position])
         holder.binding.rowBackground.setOnClickListener {
-            val action = ListFragmentDirections.actionListFragmentToUpdateFragment(currentList[position])
+            val action =
+                ListFragmentDirections.actionListFragmentToUpdateFragment(currentList[position])
             holder.binding.root.findNavController().navigate(action)
         }
 
