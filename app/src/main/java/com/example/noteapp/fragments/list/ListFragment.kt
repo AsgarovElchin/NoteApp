@@ -21,6 +21,7 @@ import com.example.noteapp.databinding.FragmentListBinding
 
 class ListFragment : Fragment(R.layout.fragment_list) {
 
+    private val mSharedViewModel: SharedViewModel by viewModels()
     private val mNoteViewModel: NoteViewModel by viewModels()
     private val listAdapter: ListAdapter = ListAdapter()
     private lateinit var binding: FragmentListBinding
@@ -45,11 +46,26 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
         setupRecyclerView()
         mNoteViewModel.getAllData.observe(viewLifecycleOwner, Observer { data ->
+            mSharedViewModel.checkIfDatabaseEmpty(data)
             listAdapter.submitList(data)
+        })
+
+        mSharedViewModel.emptyDatabase.observe(viewLifecycleOwner, Observer {
+            showEmptyDatabaseView(it)
         })
 
     }
 
+    private fun showEmptyDatabaseView(emptyDatabase:Boolean){
+        if(emptyDatabase){
+            binding.noDataImageView.visibility = View.VISIBLE
+            binding.noDataTextView.visibility = View.VISIBLE
+        }
+        else{
+            binding.noDataImageView.visibility = View.INVISIBLE
+            binding.noDataTextView.visibility = View.INVISIBLE
+        }
+    }
 
     private fun setupMenu() {
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
