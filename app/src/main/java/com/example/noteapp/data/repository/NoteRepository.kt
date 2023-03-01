@@ -12,4 +12,7 @@ class NoteRepository(
     suspend fun insertData(noteData: NoteData){
         noteDao.insertData(noteData)
     }
+    suspend fun updateData(noteData: NoteData){
+        noteDao.updateData(noteData)
+    }
 }

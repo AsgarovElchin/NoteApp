@@ -29,4 +29,11 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
             repository.insertData(noteData)
         }
     }
+
+    fun updateData(noteData: NoteData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateData(noteData)
+        }
+    }
+
 }

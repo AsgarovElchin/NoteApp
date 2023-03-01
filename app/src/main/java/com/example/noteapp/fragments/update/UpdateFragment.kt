@@ -2,19 +2,27 @@ package com.example.noteapp.fragments.update
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.noteapp.R
+import com.example.noteapp.data.models.NoteData
 import com.example.noteapp.data.models.Priorities
+import com.example.noteapp.data.viewmodel.NoteViewModel
+import com.example.noteapp.data.viewmodel.SharedViewModel
 import com.example.noteapp.databinding.FragmentUpdateBinding
 import com.example.noteapp.databinding.RowLayoutBinding
 
 
 class UpdateFragment : Fragment() {
 
+    private val mSharedViewModel: SharedViewModel by viewModels()
+    private val mNoteViewModel: NoteViewModel by viewModels()
     private lateinit var binding: FragmentUpdateBinding
     private val args by navArgs<UpdateFragmentArgs>()
 
@@ -32,7 +40,7 @@ class UpdateFragment : Fragment() {
         setupMenu()
         binding.currentTitleEt.setText(args.currentItem.title)
         binding.currentDescriptionEt.setText(args.currentItem.description)
-        binding.currentPrioritiesSpinner.setSelection(parsePriority(args.currentItem.priority))
+        binding.currentPrioritiesSpinner.setSelection(mSharedViewModel.parsePriorityToInt(args.currentItem.priority))
     }
 
 
@@ -47,17 +55,34 @@ class UpdateFragment : Fragment() {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Validate and handle the selected menu item
+                if (menuItem.itemId == R.id.menu_save) {
+                    updateData()
+                }
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    private fun parsePriority(priorities: Priorities): Int {
-        return when (priorities) {
-            Priorities.HIGH -> 0
-            Priorities.MEDIUM -> 1
-            Priorities.LOW -> 2
+
+    private fun updateData() {
+        val title = binding.currentTitleEt.text.toString()
+        val description = binding.currentDescriptionEt.text.toString()
+        val getPriority = binding.currentPrioritiesSpinner.selectedItem.toString()
+
+        val validation = mSharedViewModel.verifyDataFromUser(title, description)
+        if (validation) {
+            val updateItem = NoteData(
+                args.currentItem.id,
+                title,
+                mSharedViewModel.parsePriority(getPriority),
+                description
+            )
+            mNoteViewModel.updateData(updateItem)
+            Toast.makeText(requireContext(), "Successfully updated!", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_updateFragment_to_listFragment)
+        } else {
+            Toast.makeText(requireContext(), "Please full out all fields.", Toast.LENGTH_SHORT)
+                .show()
         }
 
     }
