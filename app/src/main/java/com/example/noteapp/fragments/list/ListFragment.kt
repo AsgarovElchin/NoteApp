@@ -96,6 +96,12 @@ class ListFragment : Fragment(R.layout.fragment_list), SearchView.OnQueryTextLis
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     R.id.menu_delete_all -> confirmRemoval()
+                    R.id.menu_priority_high -> mNoteViewModel.sortByHighPriority.observe(requireActivity(),Observer{
+                        listAdapter.submitList(it)
+                    })
+                    R.id.menu_priority_low -> mNoteViewModel.sortByLowPriority.observe(requireActivity(),Observer{
+                        listAdapter.submitList(it)
+                    })
                 }
 
                 return true
