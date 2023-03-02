@@ -23,6 +23,7 @@ import com.example.noteapp.data.viewmodel.NoteViewModel
 import com.example.noteapp.data.viewmodel.SharedViewModel
 import com.example.noteapp.databinding.FragmentListBinding
 import com.example.noteapp.fragments.list.adapter.ListAdapter
+import com.example.noteapp.utils.hideKeyboard
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -39,6 +40,9 @@ class ListFragment : Fragment(R.layout.fragment_list) {
     ): View? {
         binding = FragmentListBinding.inflate(inflater, container, false)
         return binding.root
+
+        hideKeyboard(requireActivity())
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,6 +64,9 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         mSharedViewModel.emptyDatabase.observe(viewLifecycleOwner, Observer {
             showEmptyDatabaseView(it)
         })
+
+
+
 
     }
 
