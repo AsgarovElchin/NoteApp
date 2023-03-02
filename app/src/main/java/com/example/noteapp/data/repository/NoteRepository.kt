@@ -1,5 +1,6 @@
 package com.example.noteapp.data.repository
 
+import android.provider.ContactsContract.CommonDataKinds.Note
 import androidx.lifecycle.LiveData
 import com.example.noteapp.data.NoteDao
 import com.example.noteapp.data.models.NoteData
@@ -23,4 +24,8 @@ class NoteRepository(
     suspend fun deleteAll(){
         noteDao.deleteAll()
     }
+
+    fun searchDatabase(searchQuery:String):LiveData<List<NoteData>>{
+        return noteDao.searchDatabase(searchQuery)}
+
 }

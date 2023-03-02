@@ -1,6 +1,7 @@
 package com.example.noteapp.data.viewmodel
 
 import android.app.Application
+import android.provider.ContactsContract.CommonDataKinds.Note
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
@@ -46,6 +47,10 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAll()
         }
+    }
+
+    fun searchDatabase(searchQuery: String): LiveData<List<NoteData>> {
+        return repository.searchDatabase(searchQuery)
     }
 
 }

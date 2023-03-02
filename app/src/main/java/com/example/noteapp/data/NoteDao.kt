@@ -1,5 +1,6 @@
 package com.example.noteapp.data
 
+import android.provider.ContactsContract.CommonDataKinds.Note
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.noteapp.data.models.NoteData
@@ -20,5 +21,9 @@ interface NoteDao {
 
     @Query("DELETE FROM note_table")
     suspend fun deleteAll()
+
+
+    @Query("SELECT * FROM note_table WHERE title LIKE :searchQuery")
+    fun searchDatabase(searchQuery: String): LiveData<List<NoteData>>
 
 }

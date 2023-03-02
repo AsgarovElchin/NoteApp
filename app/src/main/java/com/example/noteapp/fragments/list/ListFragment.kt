@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.provider.ContactsContract.CommonDataKinds.Note
 import android.view.*
+import androidx.appcompat.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.core.view.MenuHost
@@ -27,7 +28,7 @@ import com.example.noteapp.utils.hideKeyboard
 import com.google.android.material.snackbar.Snackbar
 
 
-class ListFragment : Fragment(R.layout.fragment_list) {
+class ListFragment : Fragment(R.layout.fragment_list), SearchView.OnQueryTextListener {
 
     private val mSharedViewModel: SharedViewModel by viewModels()
     private val mNoteViewModel: NoteViewModel by viewModels()
@@ -66,8 +67,6 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         })
 
 
-
-
     }
 
     private fun showEmptyDatabaseView(emptyDatabase: Boolean) {
@@ -88,6 +87,10 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.list_fragment_menu, menu)
+                val search = menu.findItem(R.id.menu_search)
+                val searchView = search.actionView as? SearchView
+                searchView?.isSubmitButtonEnabled = true
+                searchView?.setOnQueryTextListener(this@ListFragment)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -102,7 +105,7 @@ class ListFragment : Fragment(R.layout.fragment_list) {
 
     private fun setupRecyclerView() {
         binding.recyclerView.layoutManager =
-          StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         binding.recyclerView.adapter = listAdapter
         swipeToDelete(binding.recyclerView)
     }
@@ -115,19 +118,19 @@ class ListFragment : Fragment(R.layout.fragment_list) {
                 mNoteViewModel.deleteItem(itemToDelete)
                 listAdapter.notifyItemRemoved(viewHolder.adapterPosition)
 
-                restoreDeletedData(viewHolder.itemView,itemToDelete,viewHolder.adapterPosition)
+                restoreDeletedData(viewHolder.itemView, itemToDelete, viewHolder.adapterPosition)
             }
         }
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallBack)
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
-    private fun restoreDeletedData(view:View, deletedItem : NoteData, position :Int){
+    private fun restoreDeletedData(view: View, deletedItem: NoteData, position: Int) {
         val snackbar = Snackbar.make(
-            view, "Deleted '${deletedItem.title}",Snackbar.LENGTH_LONG
+            view, "Deleted '${deletedItem.title}", Snackbar.LENGTH_LONG
         )
 
-        snackbar.setAction("Undo"){
+        snackbar.setAction("Undo") {
             mNoteViewModel.insertData(deletedItem)
         }
         snackbar.show()
@@ -144,6 +147,29 @@ class ListFragment : Fragment(R.layout.fragment_list) {
         builder.setTitle("Delete Everything?")
         builder.setMessage("Are you sure you want to remove Everything?")
         builder.create().show()
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        if (query != null) {
+            searchThroughDatabase(query)
+        }
+        return true
+    }
+
+    private fun searchThroughDatabase(query: String) {
+        val searchQuery = "%$query%"
+        mNoteViewModel.searchDatabase(searchQuery).observe(this, Observer { list ->
+            list?.let {
+                listAdapter.submitList(it)
+            }
+        })
+    }
+
+    override fun onQueryTextChange(query: String?): Boolean {
+        if (query != null) {
+            searchThroughDatabase(query)
+        }
+        return true
     }
 
 
