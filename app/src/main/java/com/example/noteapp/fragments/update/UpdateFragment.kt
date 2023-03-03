@@ -42,7 +42,9 @@ class UpdateFragment : Fragment() {
         binding.currentTitleEt.setText(args.currentItem.title)
         binding.currentDescriptionEt.setText(args.currentItem.description)
         binding.currentPrioritiesSpinner.setSelection(mSharedViewModel.parsePriorityToInt(args.currentItem.priority))
+
     }
+
 
 
     private fun setupMenu() {
