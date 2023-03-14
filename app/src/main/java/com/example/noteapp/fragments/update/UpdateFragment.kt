@@ -58,10 +58,17 @@ class UpdateFragment : Fragment() {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                when (menuItem.itemId) {
-                    R.id.menu_save -> updateData()
-                    R.id.menu_delete -> confirmItemRemoval()
+
+                if (menuItem.itemId == R.id.menu_save) {
+                    updateData()
                 }
+                else if(menuItem.itemId == R.id.menu_delete){
+                    confirmItemRemoval()
+                }
+                else if(menuItem.itemId == android.R.id.home){
+                    findNavController().navigate(R.id.action_updateFragment_to_listFragment)
+                }
+
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)

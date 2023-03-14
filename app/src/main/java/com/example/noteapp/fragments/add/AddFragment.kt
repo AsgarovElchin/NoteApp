@@ -36,6 +36,8 @@ class AddFragment : Fragment() {
 
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupMenu()
@@ -56,6 +58,9 @@ class AddFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 if (menuItem.itemId == R.id.menu_add) {
                     insertDataToDB()
+                }
+                else if(menuItem.itemId == android.R.id.home){
+                    findNavController().navigate(R.id.action_addFragment_to_listFragment)
                 }
                 return true
             }
@@ -85,6 +90,7 @@ class AddFragment : Fragment() {
 
 
     }
+
 
 
 }
